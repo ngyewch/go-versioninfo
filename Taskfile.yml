@@ -1,4 +1,4 @@
-version: '3'
+version: 3
 
 tasks:
   clean:
@@ -9,9 +9,7 @@ tasks:
   build:
     desc: Build
     cmds:
-      - mkdir -p dist
-      - go build -o dist/go-versioninfo .
-      #- mage -v build
+      - goreleaser build --snapshot --clean
 
   dependencyUpdates:
     desc: Show dependency updates
