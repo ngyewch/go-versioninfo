@@ -106,15 +106,14 @@ func doEnv(cmd *cobra.Command, args []string) error {
 	}
 
 	if info != nil {
-		prefix := ""
 		if info.Version != "" {
-			fmt.Printf("%sVERSION=%s\n", prefix, info.Version)
+			fmt.Printf("export %sVERSION=%s\n", envPrefix, info.Version)
 		}
 		if info.Commit != "" {
-			fmt.Printf("%sCOMMIT=%s\n", prefix, info.Commit)
+			fmt.Printf("export %sCOMMIT=%s\n", envPrefix, info.Commit)
 		}
 		if info.CommitTimestamp > 0 {
-			fmt.Printf("%sCOMMIT_TIMESTAMP=%d\n", prefix, info.CommitTimestamp)
+			fmt.Printf("export %sCOMMIT_TIMESTAMP=%d\n", envPrefix, info.CommitTimestamp)
 		}
 	}
 
