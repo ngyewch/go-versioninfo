@@ -35,7 +35,7 @@ jobs:
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Git status
-        run: git status --short
+        run: git status --short || echo Failed
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Show environment
