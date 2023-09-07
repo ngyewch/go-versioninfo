@@ -22,6 +22,10 @@ jobs:
       - name: Install go-versioninfo
         run: go install github.com/ngyewch/go-versioninfo@v1.2.0
 
+      - name: List files
+        run: ls -la
+        working-directory: ${{ env.GITHUB_WORKSPACE }}
+
       - name: Get version info
         run: go-versioninfo env --git-describe-mode semver --export=false
         working-directory: ${{ env.GITHUB_WORKSPACE }}
