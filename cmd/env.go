@@ -71,27 +71,33 @@ func doEnv(cmd *cobra.Command, args []string) error {
 		resolvers = append(resolvers, envResolver)
 	}
 
+	newVersionFormatter := func() (formatter.Formatter, error) {
+		switch gitDescribeMode {
+		case "default":
+			return formatter.NewDefaultFormatter(formatter.Config{
+				TagPrefix:   gitTagPrefix,
+				FallbackTag: gitFallbackTag,
+			}), nil
+		case "semver":
+			return formatter.NewSemVerFormatter(formatter.Config{
+				TagPrefix:   gitTagPrefix,
+				FallbackTag: gitFallbackTag,
+			}, formatter.SemVerConfig{
+				PrereleasePrefix: gitSemVerPrereleasePrefix,
+			}), nil
+		default:
+			return nil, fmt.Errorf("unknown git-describe-mode")
+		}
+	}
+
 	if !disableGit {
 		gitResolverConfig := git.Config{
 			TagPrefix:  gitTagPrefix,
 			CheckDirty: gitCheckDirty,
 		}
-		var versionFormatter formatter.Formatter
-		switch gitDescribeMode {
-		case "default":
-			versionFormatter = formatter.NewDefaultFormatter(formatter.Config{
-				TagPrefix:   gitTagPrefix,
-				FallbackTag: gitFallbackTag,
-			})
-		case "semver":
-			versionFormatter = formatter.NewSemVerFormatter(formatter.Config{
-				TagPrefix:   gitTagPrefix,
-				FallbackTag: gitFallbackTag,
-			}, formatter.SemVerConfig{
-				PrereleasePrefix: gitSemVerPrereleasePrefix,
-			})
-		default:
-			return fmt.Errorf("unknown git-describe-mode")
+		versionFormatter, err := newVersionFormatter()
+		if err != nil {
+			return err
 		}
 		gitResolver, err := git.New(gitResolverConfig, versionFormatter)
 		if err != nil {
