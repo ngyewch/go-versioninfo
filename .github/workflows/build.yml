@@ -20,15 +20,15 @@ jobs:
           go-version: "~1.21"
 
       - name: Install go-versioninfo
-        run: go install github.com/ngyewch/go-versioninfo@4a00c98dc4642ed9c84c50c88ae9841708cc370a
+        run: go install github.com/ngyewch/go-versioninfo@v1.3.3
 
       - name: Get version info
         run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
-      #- name: Set version info
-      #  run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false >> "$GITHUB_ENV"
-      #  working-directory: ${{ env.GITHUB_WORKSPACE }}
+      - name: Set version info
+        run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false >> "$GITHUB_ENV"
+        working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Run GoReleaser (release)
         uses: goreleaser/goreleaser-action@v4
