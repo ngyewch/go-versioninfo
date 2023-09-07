@@ -10,9 +10,9 @@ import (
 )
 
 type versionInfoOutput struct {
-	Version         string `json:"Version"`
-	Commit          string `json:"Commit"`
-	CommitTimestamp string `json:"CommitTimestamp"`
+	Version         string `json:"Version,omitempty"`
+	Commit          string `json:"Commit,omitempty"`
+	CommitTimestamp string `json:"CommitTimestamp,omitempty"`
 }
 
 func AddVersionCmd(cmd *cobra.Command, versionInfoProvider func() *model.VersionInfo) {
@@ -39,9 +39,11 @@ func AddVersionCmd(cmd *cobra.Command, versionInfoProvider func() *model.Version
 			}
 
 			o := versionInfoOutput{
-				Version:         versionInfo.Version,
-				Commit:          versionInfo.Commit,
-				CommitTimestamp: time.Unix(versionInfo.CommitTimestamp, 0).Local().Format(time.RFC3339),
+				Version: versionInfo.Version,
+				Commit:  versionInfo.Commit,
+			}
+			if versionInfo.CommitTimestamp > 0 {
+				o.CommitTimestamp = time.Unix(versionInfo.CommitTimestamp, 0).Local().Format(time.RFC3339)
 			}
 
 			switch format {
