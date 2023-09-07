@@ -33,12 +33,11 @@ jobs:
         run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false >> "$GITHUB_ENV"
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
-      - name: Git status
-        run: git status --short || echo Failed
-        working-directory: ${{ env.GITHUB_WORKSPACE }}
-
       - name: Show environment
         run: env
+
+      - name: Show environment
+        run: echo "$VERSION / $COMMIT / $COMMIT_TIMESTAMP"
 
       - name: Run GoReleaser (release)
         uses: goreleaser/goreleaser-action@v4
