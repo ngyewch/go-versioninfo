@@ -13,9 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        #with:
-        #  fetch-depth: "0"
-        #  fetch-tags: "true"
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -23,7 +20,7 @@ jobs:
           go-version: "~1.21"
 
       - name: Install go-versioninfo
-        run: go install github.com/ngyewch/go-versioninfo@v1.3.0
+        run: go install github.com/ngyewch/go-versioninfo@v1.3.1
 
       - name: Get version info
         run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false
@@ -32,12 +29,6 @@ jobs:
       - name: Set version info
         run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false >> "$GITHUB_ENV"
         working-directory: ${{ env.GITHUB_WORKSPACE }}
-
-      - name: Test 1
-        run: echo "COMMIT_TIMESTAMP=$(git log -1 --format=%cd --date=unix)" >> "$GITHUB_ENV"
-
-      - name: Test 2
-        run: echo "$COMMIT_TIMESTAMP"
 
       - name: Run GoReleaser (release)
         uses: goreleaser/goreleaser-action@v4
