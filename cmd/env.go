@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/ngyewch/go-versioninfo/formatter"
 	"github.com/ngyewch/go-versioninfo/model"
 	"github.com/ngyewch/go-versioninfo/resolver"
 	"github.com/ngyewch/go-versioninfo/resolver/env"
@@ -43,11 +44,6 @@ func doEnv(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	gitDropTagPrefix, err := cmd.Flags().GetBool("git-drop-tag-prefix")
-	if err != nil {
-		return err
-	}
-
 	gitFallbackTag, err := cmd.Flags().GetString("git-fallback-tag")
 	if err != nil {
 		return err
@@ -77,23 +73,27 @@ func doEnv(cmd *cobra.Command, args []string) error {
 
 	if !disableGit {
 		gitResolverConfig := git.Config{
-			TagPrefix:     gitTagPrefix,
-			DropTagPrefix: gitDropTagPrefix,
-			FallbackTag:   gitFallbackTag,
-			CheckDirty:    gitCheckDirty,
+			TagPrefix:  gitTagPrefix,
+			CheckDirty: gitCheckDirty,
 		}
-		var converter git.VersionInfoConverter
+		var versionFormatter formatter.Formatter
 		switch gitDescribeMode {
 		case "default":
-			converter = git.NewDefaultVersionInfoConverter(gitResolverConfig)
+			versionFormatter = formatter.NewDefaultFormatter(formatter.Config{
+				TagPrefix:   gitTagPrefix,
+				FallbackTag: gitFallbackTag,
+			})
 		case "semver":
-			converter = git.NewSemVerVersionInfoConverter(gitResolverConfig, git.SemVerVersionInfoConverterConfig{
+			versionFormatter = formatter.NewSemVerFormatter(formatter.Config{
+				TagPrefix:   gitTagPrefix,
+				FallbackTag: gitFallbackTag,
+			}, formatter.SemVerConfig{
 				PrereleasePrefix: gitSemVerPrereleasePrefix,
 			})
 		default:
 			return fmt.Errorf("unknown git-describe-mode")
 		}
-		gitResolver, err := git.New(gitResolverConfig, converter)
+		gitResolver, err := git.New(gitResolverConfig, versionFormatter)
 		if err != nil {
 			return err
 		}
@@ -146,7 +146,6 @@ func init() {
 	envCmd.Flags().Bool("disable-git", false, "Disable git resolver.")
 	envCmd.Flags().String("git-describe-mode", "default", "Git describe mode (default, semver).")
 	envCmd.Flags().String("git-tag-prefix", "v", "Git resolver: Tag prefix.")
-	envCmd.Flags().Bool("git-drop-tag-prefix", true, "Git resolver: Drop tag prefix.")
 	envCmd.Flags().String("git-fallback-tag", "v0.0.0", "Git resolver: Fallback tag.")
 	envCmd.Flags().String("git-semver-prerelease-prefix", "dev", "Git resolver: Semver prerelease prefix.")
 	envCmd.Flags().Bool("git-check-dirty", true, "Git resolver: Check dirty")
