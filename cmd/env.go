@@ -128,9 +128,8 @@ func doEnv(cmd *cobra.Command, args []string) error {
 	}
 
 	info, err := func() (*model.VersionInfo, error) {
-		for i, r := range resolvers {
+		for _, r := range resolvers {
 			info, err := r.Resolve()
-			fmt.Printf("%d / %+v / %v\n", i, info, err)
 			if err != nil {
 				continue
 			}
