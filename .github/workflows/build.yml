@@ -13,9 +13,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: "0"
-          fetch-tags: "true"
+        #with:
+        #  fetch-depth: "0"
+        #  fetch-tags: "true"
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -33,11 +33,11 @@ jobs:
         run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false >> "$GITHUB_ENV"
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
-      - name: Show environment
-        run: env
+      - name: Test 1
+        run: echo "COMMIT_TIMESTAMP=$(git log -1 --format=%cd --date=unix)" >> "$GITHUB_ENV"
 
-      - name: Show environment
-        run: echo "$VERSION / $COMMIT / $COMMIT_TIMESTAMP"
+      - name: Test 2
+        run: echo "$COMMIT_TIMESTAMP"
 
       - name: Run GoReleaser (release)
         uses: goreleaser/goreleaser-action@v4
