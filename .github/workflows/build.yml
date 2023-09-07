@@ -23,6 +23,9 @@ jobs:
         run: go install github.com/ngyewch/go-versioninfo@v1.2.0
 
       - name: Get version info
+        run: go-versioninfo env --git-describe-mode semver --export=false
+
+      - name: Set version info
         run: go-versioninfo env --git-describe-mode semver --export=false >> "$GITHUB_ENV"
 
       - name: Show environment
