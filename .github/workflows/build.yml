@@ -24,9 +24,11 @@ jobs:
 
       - name: Get version info
         run: go-versioninfo env --git-describe-mode semver --export=false
+        working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Set version info
         run: go-versioninfo env --git-describe-mode semver --export=false >> "$GITHUB_ENV"
+        working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Show environment
         run: env
