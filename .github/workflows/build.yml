@@ -20,7 +20,7 @@ jobs:
           go-version: "~1.21"
 
       - name: Install go-versioninfo
-        run: go install github.com/ngyewch/go-versioninfo@latest
+        run: go install github.com/ngyewch/go-versioninfo@31576396e33ae9f61796aae882fa43e9c74e4cba
 
       - name: Get version info
         run: go-versioninfo env --git-describe-mode semver --git-check-dirty=false --export=false
