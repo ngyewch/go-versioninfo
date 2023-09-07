@@ -27,11 +27,11 @@ jobs:
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Get version info
-        run: go-versioninfo env --git-describe-mode semver --export=false
+        run: go-versioninfo env --git-describe-mode semver --git-dirty-check=false --export=false
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Set version info
-        run: go-versioninfo env --git-describe-mode semver --export=false >> "$GITHUB_ENV"
+        run: go-versioninfo env --git-describe-mode semver --git-dirty-check=false --export=false >> "$GITHUB_ENV"
         working-directory: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Git status
