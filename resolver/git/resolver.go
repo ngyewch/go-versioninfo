@@ -14,6 +14,7 @@ type Config struct {
 	TagPrefix     string
 	DropTagPrefix bool
 	FallbackTag   string
+	CheckDirty    bool
 }
 
 func New(config Config, converter VersionInfoConverter) (*Resolver, error) {
@@ -29,7 +30,7 @@ func New(config Config, converter VersionInfoConverter) (*Resolver, error) {
 }
 
 func (resolver *Resolver) Resolve() (*model.VersionInfo, error) {
-	describeInfo, err := resolver.helper.Describe(resolver.config.TagPrefix)
+	describeInfo, err := resolver.helper.Describe(resolver.config.TagPrefix, resolver.config.CheckDirty)
 	if err != nil {
 		return nil, err
 	}

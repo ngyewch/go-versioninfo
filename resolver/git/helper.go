@@ -56,7 +56,7 @@ func (helper *Helper) GetTags() ([]*object.Tag, error) {
 	return tags, nil
 }
 
-func (helper *Helper) Describe(tagPrefix string) (*DescribeInfo, error) {
+func (helper *Helper) Describe(tagPrefix string, checkDirty bool) (*DescribeInfo, error) {
 	var describe DescribeInfo
 
 	tags, err := helper.GetTags()
@@ -99,15 +99,17 @@ func (helper *Helper) Describe(tagPrefix string) (*DescribeInfo, error) {
 	}
 	rootPath := worktree.Filesystem.Root()
 
-	cmd := exec.Command("git", "status", "--short")
-	cmd.Dir = rootPath
-	gitStatusOutputBytes, err := cmd.Output()
-	if err != nil {
-		return nil, err
-	}
-	gitStatusOutput := string(gitStatusOutputBytes)
-	if strings.TrimSpace(gitStatusOutput) != "" {
-		describe.Dirty = true
+	if checkDirty {
+		cmd := exec.Command("git", "status", "--short")
+		cmd.Dir = rootPath
+		gitStatusOutputBytes, err := cmd.Output()
+		if err != nil {
+			return nil, err
+		}
+		gitStatusOutput := string(gitStatusOutputBytes)
+		if strings.TrimSpace(gitStatusOutput) != "" {
+			describe.Dirty = true
+		}
 	}
 
 	return &describe, nil

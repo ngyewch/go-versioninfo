@@ -63,6 +63,11 @@ func doEnv(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	gitCheckDirty, err := cmd.Flags().GetBool("git-check-dirty")
+	if err != nil {
+		return err
+	}
+
 	var resolvers []resolver.Resolver
 
 	if !disableEnv {
@@ -75,6 +80,7 @@ func doEnv(cmd *cobra.Command, args []string) error {
 			TagPrefix:     gitTagPrefix,
 			DropTagPrefix: gitDropTagPrefix,
 			FallbackTag:   gitFallbackTag,
+			CheckDirty:    gitCheckDirty,
 		}
 		var converter git.VersionInfoConverter
 		switch gitDescribeMode {
@@ -143,4 +149,5 @@ func init() {
 	envCmd.Flags().Bool("git-drop-tag-prefix", true, "Git resolver: Drop tag prefix.")
 	envCmd.Flags().String("git-fallback-tag", "v0.0.0", "Git resolver: Fallback tag.")
 	envCmd.Flags().String("git-semver-prerelease-prefix", "dev", "Git resolver: Semver prerelease prefix.")
+	envCmd.Flags().Bool("git-check-dirty", true, "Git resolver: Check dirty")
 }
