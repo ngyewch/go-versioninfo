@@ -7,6 +7,7 @@ import (
 	"github.com/ngyewch/go-versioninfo/resolver"
 	"github.com/ngyewch/go-versioninfo/resolver/env"
 	"github.com/ngyewch/go-versioninfo/resolver/git"
+	"github.com/ngyewch/go-versioninfo/resolver/github"
 	"github.com/spf13/cobra"
 )
 
@@ -64,6 +65,11 @@ func doEnv(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	disableGithub, err := cmd.Flags().GetBool("disable-github")
+	if err != nil {
+		return err
+	}
+
 	var resolvers []resolver.Resolver
 
 	if !disableEnv {
@@ -88,6 +94,21 @@ func doEnv(cmd *cobra.Command, args []string) error {
 		default:
 			return nil, fmt.Errorf("unknown git-describe-mode")
 		}
+	}
+
+	if !disableGithub {
+		gitResolverConfig := github.Config{
+			CheckDirty: gitCheckDirty,
+		}
+		versionFormatter, err := newVersionFormatter()
+		if err != nil {
+			return err
+		}
+		githubResolver, err := github.New(gitResolverConfig, versionFormatter)
+		if err != nil {
+			return err
+		}
+		resolvers = append(resolvers, githubResolver)
 	}
 
 	if !disableGit {
@@ -155,4 +176,6 @@ func init() {
 	envCmd.Flags().String("git-fallback-tag", "v0.0.0", "Git resolver: Fallback tag.")
 	envCmd.Flags().String("git-semver-prerelease-prefix", "dev", "Git resolver: Semver prerelease prefix.")
 	envCmd.Flags().Bool("git-check-dirty", true, "Git resolver: Check dirty")
+
+	envCmd.Flags().Bool("disable-github", false, "Disable GitHub resolver.")
 }
