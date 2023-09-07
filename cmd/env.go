@@ -18,6 +18,11 @@ var (
 )
 
 func doEnv(cmd *cobra.Command, args []string) error {
+	export, err := cmd.Flags().GetBool("export")
+	if err != nil {
+		return err
+	}
+
 	disableEnv, err := cmd.Flags().GetBool("disable-env")
 	if err != nil {
 		return err
@@ -106,14 +111,18 @@ func doEnv(cmd *cobra.Command, args []string) error {
 	}
 
 	if info != nil {
+		exportPreamble := ""
+		if export {
+			exportPreamble = "export "
+		}
 		if info.Version != "" {
-			fmt.Printf("export %sVERSION=%s\n", envPrefix, info.Version)
+			fmt.Printf("%s%sVERSION=%s\n", exportPreamble, envPrefix, info.Version)
 		}
 		if info.Commit != "" {
-			fmt.Printf("export %sCOMMIT=%s\n", envPrefix, info.Commit)
+			fmt.Printf("%s%sCOMMIT=%s\n", exportPreamble, envPrefix, info.Commit)
 		}
 		if info.CommitTimestamp > 0 {
-			fmt.Printf("export %sCOMMIT_TIMESTAMP=%d\n", envPrefix, info.CommitTimestamp)
+			fmt.Printf("%s%sCOMMIT_TIMESTAMP=%d\n", exportPreamble, envPrefix, info.CommitTimestamp)
 		}
 	}
 
@@ -122,6 +131,8 @@ func doEnv(cmd *cobra.Command, args []string) error {
 
 func init() {
 	rootCmd.AddCommand(envCmd)
+
+	envCmd.Flags().Bool("export", true, "Export.")
 
 	envCmd.Flags().Bool("disable-env", false, "Disable env resolver.")
 	envCmd.Flags().String("env-prefix", "", "Environment variable prefix.")
