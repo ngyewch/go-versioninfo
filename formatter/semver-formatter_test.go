@@ -93,4 +93,20 @@ func TestSemVerFormatter(t *testing.T) {
 		}
 		assert.Equal(t, expected, actual, "expected %+v, actual %+v", expected, actual)
 	}
+
+	{
+		actual := formatter.Format(&SimpleDescribeInfo{
+			Tag:               "1.2.3-beta.1+jupiter",
+			Commit:            "96251e73293db1b47ae17c56320a077d608aec67",
+			CommitTimestamp:   1694092640,
+			AdditionalCommits: 15,
+			Dirty:             false,
+		})
+		expected := &model.VersionInfo{
+			Version:         "1.2.3-beta.1.dev.15.g96251e7+jupiter",
+			Commit:          "96251e73293db1b47ae17c56320a077d608aec67",
+			CommitTimestamp: 1694092640,
+		}
+		assert.Equal(t, expected, actual, "expected %+v, actual %+v", expected, actual)
+	}
 }
