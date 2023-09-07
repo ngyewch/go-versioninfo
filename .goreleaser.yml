@@ -15,7 +15,7 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w
+      - -s -w {{ if index .Env "VERSION" }}-X github.com/ngyewch/go-versioninfo/v.Version={{ .Env.VERSION }}{{ end }} {{ if index .Env "COMMIT" }}-X github.com/ngyewch/go-versioninfo/v.Commit={{ .Env.COMMIT }}{{ end }} {{ if index .Env "COMMIT_TIMESTAMP" }}-X github.com/ngyewch/go-versioninfo/v.CommitTimestamp={{ .Env.COMMIT_TIMESTAMP }}{{ end }}
 archives:
   - format: zip
 checksum:
