@@ -20,7 +20,7 @@ jobs:
           go-version: "~1.21"
 
       - name: Install go-versioninfo
-        run: go install github.com/ngyewch/go-versioninfo@v1.2.0
+        run: go install github.com/ngyewch/go-versioninfo@v1.3.0
 
       - name: List files
         run: ls -la
