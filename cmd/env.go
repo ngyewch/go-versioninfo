@@ -70,7 +70,7 @@ func doEnv(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	var resolvers []resolver.Resolver
+	var resolvers resolver.Resolvers
 
 	if !disableEnv {
 		envResolver := env.New(envPrefix)
@@ -97,17 +97,12 @@ func doEnv(cmd *cobra.Command, args []string) error {
 	}
 
 	if !disableGithub {
-		gitResolverConfig := github.Config{
-			CheckDirty: gitCheckDirty,
-		}
+		gitResolverConfig := github.Config{}
 		versionFormatter, err := newVersionFormatter()
 		if err != nil {
 			return err
 		}
-		githubResolver, err := github.New(gitResolverConfig, versionFormatter)
-		if err != nil {
-			return err
-		}
+		githubResolver := github.New(gitResolverConfig, versionFormatter)
 		resolvers = append(resolvers, githubResolver)
 	}
 
@@ -120,10 +115,7 @@ func doEnv(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		gitResolver, err := git.New(gitResolverConfig, versionFormatter)
-		if err != nil {
-			return err
-		}
+		gitResolver := git.New(gitResolverConfig, versionFormatter)
 		resolvers = append(resolvers, gitResolver)
 	}
 

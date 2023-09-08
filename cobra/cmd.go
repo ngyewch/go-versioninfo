@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/goccy/go-yaml"
 	"github.com/ngyewch/go-versioninfo/model"
+	"github.com/ngyewch/go-versioninfo/v"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -31,6 +32,9 @@ func AddVersionCmd(cmd *cobra.Command, versionInfoProvider func() *model.Version
 				return err
 			}
 
+			if versionInfoProvider == nil {
+				versionInfoProvider = v.GetVersionInfo
+			}
 			versionInfo := versionInfoProvider()
 
 			if short {

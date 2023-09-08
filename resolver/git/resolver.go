@@ -8,7 +8,6 @@ import (
 type Resolver struct {
 	config    Config
 	formatter formatter.Formatter
-	helper    *Helper
 }
 
 type Config struct {
@@ -16,20 +15,21 @@ type Config struct {
 	CheckDirty bool
 }
 
-func New(config Config, formatter formatter.Formatter) (*Resolver, error) {
+func New(config Config, formatter formatter.Formatter) *Resolver {
+	return &Resolver{
+		config:    config,
+		formatter: formatter,
+	}
+}
+
+func (resolver *Resolver) Resolve() (*model.VersionInfo, error) {
 	repo, err := FindRepository(".")
 	if err != nil {
 		return nil, err
 	}
-	return &Resolver{
-		config:    config,
-		formatter: formatter,
-		helper:    NewHelper(repo),
-	}, nil
-}
+	helper := NewHelper(repo)
 
-func (resolver *Resolver) Resolve() (*model.VersionInfo, error) {
-	describeInfo, err := resolver.helper.Describe(resolver.config.TagPrefix, resolver.config.CheckDirty)
+	describeInfo, err := helper.Describe(resolver.config.TagPrefix, resolver.config.CheckDirty)
 	if err != nil {
 		return nil, err
 	}
