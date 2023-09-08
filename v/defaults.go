@@ -33,7 +33,7 @@ func SemVerFormatter() formatter.Formatter {
 	return semVerFormatter
 }
 
-func DefaultResolvers() (resolver.Resolvers, error) {
+func DefaultResolvers() resolver.Resolvers {
 	return []resolver.Resolver{
 		env.New(""),
 		github.New(github.Config{}, SemVerFormatter()),
@@ -41,5 +41,5 @@ func DefaultResolvers() (resolver.Resolvers, error) {
 			TagPrefix:  defaultTagPrefix,
 			CheckDirty: true,
 		}, SemVerFormatter()),
-	}, nil
+	}
 }
